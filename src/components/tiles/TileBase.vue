@@ -2,10 +2,12 @@
 import { reactive } from 'vue';
 
 <template>
-  <g :transform="`rotate(${rotation*90})`" class="tile-base-group">
-    <rect :x="customX" :y="customY" :width="sideWidth" :height="sideWidth" class="tile-base" />
-    <circle v-for="c in connections" :cx="c.cx" :cy="c.cy - 35" :r="c.r" :fill="c.fill" class="connection" @click="handleConnection(c)"/>
-  </g>
+  <svg :x="customX" :y="customY" :width="sideWidth" :height="sideWidth" viewBox="0 0 100 100">
+    <g :transform="`rotate(${rotation*90})`" class="tile-base-group">
+      <rect x="0" y="0" width="100" height="100" class="tile-base" />
+      <circle v-for="c in connections" :cx="c.cx" :cy="c.cy" :r="c.r" :fill="c.fill" class="connection" @click="handleConnection(c)"/>
+    </g>
+  </svg>
 </template>
 
 <script setup>
@@ -19,10 +21,10 @@ const props = defineProps({
 });
 
 const customX = computed(() => {
-  return props.x - props.sideWidth / 2;
+  return (props.x * props.sideWidth) - props.sideWidth / 2;
 })
 const customY = computed(() => {
-  return props.y - props.sideWidth / 2;
+  return (props.y * props.sideWidth) - props.sideWidth / 2;
 })
 
 const directionMappedByRotation = computed(() => [0, 1, 2, 3].map(i => (i + props.rotation)%4));
@@ -38,10 +40,10 @@ const directionMappedByRotation = computed(() => [0, 1, 2, 3].map(i => (i + prop
 */
 
 const connections = computed(() => ([
-  { cx: props.x, cy: props.y, r: 15, fill: "grey", direction: 0},
-  { cx: props.x + 35, cy: props.y + 35, r: 15, fill: "green", direction: 1},
-  { cx: props.x, cy: props.y + 2 * 35, r: 15, fill: "blue", direction: 2},
-  { cx: props.x - 35, cy: props.y + 35, r: 15, fill: "yellow", direction: 3},
+  { cx: 50, cy: 15, r: 15, fill: "grey", direction: 0},
+  { cx: 85, cy: 50, r: 15, fill: "green", direction: 1},
+  { cx: 50, cy: 85, r: 15, fill: "blue", direction: 2},
+  { cx: 15, cy: 50, r: 15, fill: "yellow", direction: 3},
 ]));
 
 const emit = defineEmits(['tile:explore']);

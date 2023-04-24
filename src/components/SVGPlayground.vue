@@ -1,5 +1,5 @@
 <template>
-  <svg :width="sideWidth" :height="sideWidth" viewBox="-500 -500 1000 1000" class="svg-playground">
+  <svg :width="sideWidth" :height="sideWidth" viewBox="0 0 1000 1000" class="svg-playground">
     <slot />
   </svg>
 </template>
