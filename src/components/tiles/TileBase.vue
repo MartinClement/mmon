@@ -40,10 +40,10 @@ const directionMappedByRotation = computed(() => [0, 1, 2, 3].map(i => (i + prop
 */
 
 const connections = [
-  { cx: 50, cy: 15, r: 15, fill: "grey", direction: 0},
-  { cx: 85, cy: 50, r: 15, fill: "green", direction: 1},
-  { cx: 50, cy: 85, r: 15, fill: "blue", direction: 2},
-  { cx: 15, cy: 50, r: 15, fill: "yellow", direction: 3},
+  { cx: 50, cy: 0, r: 20, fill: "grey", direction: 0},
+  { cx: 100, cy: 50, r: 20, fill: "green", direction: 1},
+  { cx: 50, cy: 100, r: 20, fill: "blue", direction: 2},
+  { cx: 0, cy: 50, r: 20, fill: "yellow", direction: 3},
 ];
 
 const emit = defineEmits(['tile:explore']);

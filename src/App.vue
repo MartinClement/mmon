@@ -1,5 +1,5 @@
 <template>
-  <SVGPlayground :sideWidth="600" :viewBoxSideWidth="1000">
+  <SVGPlayground :sideWidth="900" :viewBoxSideWidth="PLAYGROUND_VIEWBOX_SIDE_WIDTH">
     <defs>
       <pattern id="grid" viewBox="0,0,10,10" :width="`${100/gridSize}%`" :height="`${100/gridSize}%`">
         <line x1="10" y1="0" x2="10" y2="10" stroke="black" stroke-width="0.5" />
@@ -32,20 +32,26 @@ const indexedTiles = computed(() => tiles.value.reduce((it, tile, ti) => {
   return tile ? [...it, { ...tile, x: (ti - y * gridSize), y }] : it;
 }, []));
 
+/* Bassicaly a tile can be explored if i is not already */
+const canExplore = (index) => !Boolean(tiles.value[index]);
+
 const handleExplore = ({ x, y, direction }) => {
-  const newTiles = tiles.value;
   const newX = direction % 2 != 0 ? direction === 1 ? x + 1 : x - 1 : x;
   const newY = direction % 2 === 0 ? direction === 0 ? y - 1 : y + 1 : y;
   const tileIndex = (gridSize * newY) + newX;
+  const newTiles = tiles.value;
 
-  newTiles[tileIndex] = {
-    ...BASE_TILE,
-    rotation: (direction + 2)%4,
-    x: direction % 2 != 0 ? direction === 1 ? x + 1 : x - 1 : x,
-    y: direction % 2 === 0 ? direction === 0 ? y - 1 : y + 1 : y,
+  if(canExplore(tileIndex)) {
+    console.log("explore allowed");
+    newTiles[tileIndex] = {
+      ...BASE_TILE,
+      rotation: (direction + 2)%4,
+      x: newX,
+      y: newY,
+    }
+
+    tiles.value = newTiles;
   }
-
-  tiles.value = newTiles;
 }
 </script>
 
