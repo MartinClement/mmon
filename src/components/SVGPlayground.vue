@@ -1,5 +1,5 @@
 <template>
-  <svg :width="sideWidth" :height="sideWidth" viewBox="0 0 1000 1000" class="svg-playground">
+  <svg :width="sideWidth" :height="sideWidth" :viewBox="`0 0 ${viewBoxSideWidth} ${viewBoxSideWidth}`" class="svg-playground">
     <slot />
   </svg>
 </template>
@@ -7,6 +7,7 @@
 <script setup>
 defineProps({
   sideWidth: { type: Number, default: 800 },
+  viewBoxSideWidth: { type: Number, required: true },
 })
 </script>
 

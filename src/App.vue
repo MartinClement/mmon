@@ -1,5 +1,5 @@
 <template>
-  <SVGPlayground>
+  <SVGPlayground :sideWidth="600" :viewBoxSideWidth="1000">
     <defs>
       <pattern id="grid" viewBox="0,0,10,10" :width="`${100/gridSize}%`" :height="`${100/gridSize}%`">
         <line x1="10" y1="0" x2="10" y2="10" stroke="black" stroke-width="0.5" />
@@ -20,45 +20,32 @@ import TileBase from './components/tiles/TileBase.vue'
 
 import { ref, computed } from "vue";
 
-const TILE_SIDE_WIDTH = 100;
-
-const gridSize = 11
+const gridSize = 13
 const gridCenterIndex = Math.floor((gridSize**2)/2);
+const PLAYGROUND_VIEWBOX_SIDE_WIDTH = 1000;
+const BASE_TILE = { rotation: 0, sideWidth: 100 / gridSize };
 
 const tiles = ref(Array(gridSize**2).fill(undefined));
-tiles.value[gridCenterIndex] = {rotation: 0}
+tiles.value[gridCenterIndex] = { ...BASE_TILE }
 const indexedTiles = computed(() => tiles.value.reduce((it, tile, ti) => {
   const y = Math.floor(ti /gridSize);
   return tile ? [...it, { ...tile, x: (ti - y * gridSize), y }] : it;
 }, []));
 
-console.log(indexedTiles.value);
-
 const handleExplore = ({ x, y, direction }) => {
-  const isVerticalExplore = [0, 2].includes(direction);
-  const isHorizontalExplore = [1, 3].includes(direction);
-  const isTop = direction === 0;
-  const isRight = direction === 1;
+  const newTiles = tiles.value;
+  const newX = direction % 2 != 0 ? direction === 1 ? x + 1 : x - 1 : x;
+  const newY = direction % 2 === 0 ? direction === 0 ? y - 1 : y + 1 : y;
+  const tileIndex = (gridSize * newY) + newX;
 
-  console.log({
-    direction,
-    isTop,
-    isRight,
-    isVerticalExplore,
-    isHorizontalExplore,
-    x,
-    y,
-  });
+  newTiles[tileIndex] = {
+    ...BASE_TILE,
+    rotation: (direction + 2)%4,
+    x: direction % 2 != 0 ? direction === 1 ? x + 1 : x - 1 : x,
+    y: direction % 2 === 0 ? direction === 0 ? y - 1 : y + 1 : y,
+  }
 
-  tiles.value = [
-    ...tiles.value,
-    {
-      x: isHorizontalExplore ? isRight ? x + TILE_SIDE_WIDTH : x - TILE_SIDE_WIDTH : x,
-      y: isVerticalExplore ? isTop ? y - TILE_SIDE_WIDTH : y + TILE_SIDE_WIDTH : y,
-      sideWidth: TILE_SIDE_WIDTH,
-      rotation: (direction + 2)%4,
-    },
-  ];
+  tiles.value = newTiles;
 }
 </script>
 
