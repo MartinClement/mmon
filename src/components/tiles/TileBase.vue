@@ -5,7 +5,7 @@ import { reactive } from 'vue';
   <svg :x="customX" :y="customY" :width="`${sideWidth}%`" :height="`${sideWidth}%`" viewBox="0 0 100 100">
     <g :transform="`rotate(${rotation*90})`" class="tile-base-group">
       <rect x="0" y="0" width="100" height="100" class="tile-base" />
-      <circle v-for="c in connections" :cx="c.cx" :cy="c.cy" :r="c.r" :fill="c.fill" class="connection" @click="handleConnection(c)"/>
+      <circle v-for="c in platforms" :cx="c.cx" :cy="c.cy" :r="c.r" :fill="c.fill" class="platform" @click="handleExplore(c)"/>
     </g>
   </svg>
 </template>
@@ -39,7 +39,7 @@ const directionMappedByRotation = computed(() => [0, 1, 2, 3].map(i => (i + prop
 
 */
 
-const connections = [
+const platforms = [
   { cx: 50, cy: 0, r: 20, fill: "grey", direction: 0},
   { cx: 100, cy: 50, r: 20, fill: "green", direction: 1},
   { cx: 50, cy: 100, r: 20, fill: "blue", direction: 2},
@@ -47,7 +47,7 @@ const connections = [
 ];
 
 const emit = defineEmits(['tile:explore']);
-const handleConnection = (c) => {
+const handleExplore = (c) => {
   const y = emit('tile:explore', {
     x: props.x,
     y: props.y,
@@ -66,7 +66,7 @@ const handleConnection = (c) => {
   transform-box: fill-box;
 }
 
-.connection:hover {
+.platform:hover {
   stroke: #eee;
   stroke-width: 1;
   cursor: pointer;
