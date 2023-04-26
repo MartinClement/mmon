@@ -15,10 +15,13 @@
 </template>
 
 <script setup>
-import SVGPlayground from './components/SVGPlayground.vue'
-import TileBase from './components/tiles/TileBase.vue'
-
+import SVGPlayground from './components/SVGPlayground.vue';
+import TileBase from './components/tiles/TileBase.vue';
+import { TILES_CONFIG } from "./config/tiles";
 import { ref, computed } from "vue";
+
+const STARTER_TILE = { ...TILES_CONFIG.find(t => t.ref === "starter") };
+const GAME_TILES = TILES_CONFIG.reduce(( tiles, tile) => tile.ref === "A" ? [...tiles, { ...tile }] : tiles, []);
 
 const gridSize = 13
 const gridCenterIndex = Math.floor((gridSize**2)/2);
@@ -26,14 +29,17 @@ const PLAYGROUND_VIEWBOX_SIDE_WIDTH = 1000;
 const BASE_TILE = { rotation: 0, sideWidth: 100 / gridSize };
 
 const tiles = ref(Array(gridSize**2).fill(undefined));
-tiles.value[gridCenterIndex] = { ...BASE_TILE }
+tiles.value[gridCenterIndex] = { ...BASE_TILE, zones: STARTER_TILE.zones }
 const indexedTiles = computed(() => tiles.value.reduce((it, tile, ti) => {
   const y = Math.floor(ti /gridSize);
   return tile ? [...it, { ...tile, x: (ti - y * gridSize), y }] : it;
 }, []));
 
 /* Bassicaly a tile can be explored if i is not already */
-const canExplore = (index) => !Boolean(tiles.value[index]);
+const canExplore = (index) => {
+  console.log(GAME_TILES, Boolean(tiles.value[index]));
+  return GAME_TILES.length && !Boolean(tiles.value[index]);
+}
 
 const handleExplore = ({ x, y, direction }) => {
   const newX = direction % 2 != 0 ? direction === 1 ? x + 1 : x - 1 : x;
@@ -42,12 +48,13 @@ const handleExplore = ({ x, y, direction }) => {
   const newTiles = tiles.value;
 
   if(canExplore(tileIndex)) {
-    console.log("explore allowed");
+    console.log('canExplore');
+    const pickedTile = GAME_TILES.pop();
+    console.log(pickedTile);
     newTiles[tileIndex] = {
       ...BASE_TILE,
+      zones: pickedTile.zones,
       rotation: (direction + 2)%4,
-      x: newX,
-      y: newY,
     }
 
     tiles.value = newTiles;
