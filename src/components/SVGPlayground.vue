@@ -13,6 +13,6 @@ defineProps({
 
 <style scoped>
   .svg-playground {
-    background-color: saddlebrown;
+    background-color: #212121;
   }
 </style>

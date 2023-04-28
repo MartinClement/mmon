@@ -36,3 +36,10 @@ const handleClick = () => {
   }
 }
 </script>
+
+<style scoped>
+.platform {
+  stroke: #cfcfcf;
+  stroke-width: 2;
+}
+</style>

@@ -1,6 +1,3 @@
-
-import { reactive } from 'vue';
-
 <template>
   <svg :x="customX" :y="customY" :width="`${sideWidth}%`" :height="`${sideWidth}%`" viewBox="0 0 100 100">
     <rect x="0" y="0" width="100" height="100" class="tile-base" />
@@ -70,7 +67,7 @@ const platforms = computed(() => props.zones.reduce((ptfrms, zone, index) => {
 
 <style scoped>
 .tile-base {
-  fill: #121212;
+  fill: saddlebrown;
 }
 
 .tile-base-group {
