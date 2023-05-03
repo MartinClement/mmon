@@ -1,16 +1,13 @@
 <template>
-  <circle :cx="x" :cy="y" :r="r" :fill="PLATFORM_COLOR_BY_RESOURCE[resource]" class="platform" @click="handleClick"/>
+  <svg height="20" width="20" viewBox="0 0 20 20" :x="`${platformPosition.x}%`" :y="`${platformPosition.y}%`">
+    <g class="halfs">
+      <circle cx="10" cy="10" r="10" fill="red" />
+    </g>
+  </svg>
 </template>
 
 <script setup>
-const PLATFORM_RESOURCES = [
-  "blue",
-  "yellow",
-  "purple",
-  "orange",
-  "maroon",
-  "grey",
-];
+import { computed } from "vue";
 
 const PLATFORM_COLOR_BY_RESOURCE = {
   blue: "blue",
@@ -22,13 +19,34 @@ const PLATFORM_COLOR_BY_RESOURCE = {
 };
 
 const props = defineProps({
-  x: { type: Number, required: true },
-  y: { type: Number, required: true },
-  r: { type: Number, default: 20 },
-  direction: { type: Number, required: true },
-  resource: { type: String, required: true },
+  ids: { type: Array, required: true},
+  tileSideWidth: { type: Number, required: true},
   handleInteraction: { type: Function, default: () => ({}) },
 });
+
+const centerByZone = computed(() => [
+  [props.tileSideWidth / 2, 0],
+  [props.tileSideWidth, props.tileSideWidth / 2],
+  [props.tileSideWidth / 2, props.tileSideWidth],
+  [0, props.tileSideWidth / 2],
+]);
+
+const platformPosition = computed(() => {
+  const [x, y, zone, rotation] = props.ids[0].split('-');
+  const baseX = x * props.tileSideWidth;
+  const baseY = y * props.tileSideWidth;
+  const realZone = (zone + rotation) % 4;
+  const positionDelta = centerByZone.value[realZone];
+  const res = {x: baseX + positionDelta[0], y: baseY + positionDelta[1] };
+
+  console.log(res);
+  return res;
+})
+
+const halfPlatforms = computed(() => props.ids.map(id => {
+  const [x, y, zone, rotation, resource] = id.split("-");
+  console.log(x, y, zone, rotation, resource);
+}))
 
 const handleClick = () => {
   if (props.resource !== "grey") {

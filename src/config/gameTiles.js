@@ -1,11 +1,11 @@
 /*
  Let's say a tile is divided in 4 zones [0, 1, 2, 3]
   \ 0 /
- 3 \ / 1 Then we can describe what is show by zone 
+ 3 \ / 1 Then we can describe what will be shown by zone
    / \   --> [{platform, bridges, pipeline}, ...{...}],
   / 2 \
 
-  A tile should be able to display each element described in a zone
+  Everytime a tile is added on playground, we have everything.
 */
 
 const starterTile = {
@@ -66,7 +66,7 @@ const ATiles = [
   }
 ]
 
-export const TILES_CONFIG = [
+export const GAME_TILES = [
   starterTile,
   ...ATiles,
 ];
