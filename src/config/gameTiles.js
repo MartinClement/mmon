@@ -11,10 +11,10 @@
 const starterTile = {
   ref: 'starter',
   zones: [
-    [{ type: "platform", resource: "blue" }],
-    [{ type: "platform", resource: "yellow" }],
-    [{ type: "platform", resource: "blue" }],
-    [{ type: "platform", resource: "maroon" }],
+    [{ type: "platform", resources:  ["blue"] }],
+    [{ type: "platform", resources:  ["yellow"] }],
+    [{ type: "platform", resources:  ["blue"] }],
+    [{ type: "platform", resources:  ["maroon"] }],
   ]
 };
 
@@ -22,46 +22,46 @@ const ATiles = [
   {
     ref: 'A',
     zones: [
-      [{ type: "platform", resource: "grey" }],
-      [{ type: "platform", resource: "blue" }],
-      [{ type: "platform", resource: "yellow" }],
-      [{ type: "platform", resource: "maroon" }],
+      [{ type: "platform", resources:  ["grey"] }],
+      [{ type: "platform", resources:  ["blue"] }],
+      [{ type: "platform", resources:  ["yellow"] }],
+      [{ type: "platform", resources:  ["maroon"] }],
     ]
   },
   {
     ref: 'A',
     zones: [
-      [{ type: "platform", resource: "grey" }],
-      [{ type: "platform", resource: "orange" }],
-      [{ type: "platform", resource: "blue" }],
-      [{ type: "platform", resource: "yellow" }],
+      [{ type: "platform", resources:  ["grey"] }],
+      [{ type: "platform", resources:  ["orange"] }],
+      [{ type: "platform", resources:  ["blue"] }],
+      [{ type: "platform", resources:  ["yellow"] }],
     ]
   },
   {
     ref: 'A',
     zones: [
-      [{ type: "platform", resource: "grey" }],
-      [{ type: "platform", resource: "purple" }],
-      [{ type: "platform", resource: "yellow" }],
-      [{ type: "platform", resource: "maroon" }],
+      [{ type: "platform", resources:  ["grey"] }],
+      [{ type: "platform", resources:  ["purple"] }],
+      [{ type: "platform", resources:  ["yellow"] }],
+      [{ type: "platform", resources:  ["maroon"] }],
     ]
   },
   {
     ref: 'A',
     zones: [
-      [{ type: "platform", resource: "grey" }],
-      [{ type: "platform", resource: "blue" }],
-      [{ type: "platform", resource: "yellow" }],
-      [{ type: "platform", resource: "blue" }],
+      [{ type: "platform", resources:  ["grey"] }],
+      [{ type: "platform", resources:  ["blue"] }],
+      [{ type: "platform", resources:  ["yellow"] }],
+      [{ type: "platform", resources:  ["blue"] }],
     ]
   },
   {
     ref: 'A',
     zones: [
-      [{ type: "platform", resource: "grey" }],
-      [{ type: "platform", resource: "purple" }],
-      [{ type: "platform", resource: "yellow" }],
-      [{ type: "platform", resource: "blue" }],
+      [{ type: "platform", resources:  ["grey"] }],
+      [{ type: "platform", resources:  ["purple"] }],
+      [{ type: "platform", resources:  ["yellow"] }],
+      [{ type: "platform", resources:  ["blue"] }],
     ]
   }
 ]

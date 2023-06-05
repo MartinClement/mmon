@@ -11,9 +11,15 @@
     <TileBase v-for="tile in FLATTEN_GRID"
       :x="tile.x"
       :y="tile.y"
-      @tile:explore="handleExplore"
     />
-    <!-- <PlatformView v-for="p in indexedElements.platforms" v-bind="p" :tile-side-width="TILE_SIDEWIDTH"/> -->
+    <PlatformView
+      v-for="platform in PLATFORMS"
+      :x="platform.x"
+      :y="platform.y"
+      :zone="platform.zone"
+      :resources="platform.resources"
+      @platform:explore="handleExploration"
+    />
   </SVGPlayground>
 </template>
 
@@ -25,53 +31,83 @@ import PlatformView from "./components/platforms/PlatformView.vue";
 import { GAME_TILES } from "./config/gameTiles";
 import { ELEMENT_CONFIG } from "./config/elements";
 import { ref, computed } from "vue";
-import { isArray } from '@vue/shared';
 
 const { gridSize, tileSideWidth, playgroundViewBoxSideWidth } = ELEMENT_CONFIG;
 
 const GRID = ref(Array(gridSize).fill(undefined).map(row => Array(gridSize).fill(undefined)));
 const PLATFORMS = ref([]);
-
 let TILES_POOL = GAME_TILES.reduce(( tiles, tile) => tile.ref === "A" ? [...tiles, { ...tile }] : tiles, []);
 
-const getPlatformRef = (x, y, zoneIndex) => `${x}-${y}-${zoneIndex}`;
+const nextPlatformCordsDiffByZone = [{x: 0, y: -1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}];
+
 const getTilePlatforms = (tile, x, y) => {
   return tile.zones
     .map((zone) => zone.find((el) => el.type === "platform"))
     .reduce((ptfms, platform, zoneIndex) => {
       if (platform) {
-        return [...ptfms, { refs: [getPlatformRef(x, y, zoneIndex)], x, y }];
+        return [
+          ...ptfms,
+          {
+            ...platform,
+            x,
+            y,
+            zone:
+            zoneIndex,
+          },
+        ];
       }
 
       return ptfms;
     }, []);
 }
 
-const nextPlatformCordsDiffByZone = [{x: 0, y: -1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}];
+const getNextPlatformCoords = (x, y, zone) => ({
+  x: x + nextPlatformCordsDiffByZone[zone].x,
+  y: y + nextPlatformCordsDiffByZone[zone].y,
+  zone: (zone + 2) % 4,
+})
 
 const mergePlatforms = (oldPlatforms, newPlatforms) => {
-  console.log(oldPlatforms);
-  console.log(newPlatforms);
-
   let mergedPlatforms = [...oldPlatforms];
 
   newPlatforms.forEach((newPtfm) => {
     if (newPtfm) {
-      const [x, y, zone] = newPtfm.refs[0].split('-').map((str => parseInt(str)));
-      const cordsDiffs = nextPlatformCordsDiffByZone[zone];
-      const connectedPlatformIndex = oldPlatforms.findIndex(oPtfm => {
-        return oPtfm.refs.includes(getPlatformRef(x + cordsDiffs.x, y + cordsDiffs.y, (zone + 2) % 4));
+      const { x: nX, y: nY, zone: nZ } = getNextPlatformCoords(newPtfm.x, newPtfm.y, newPtfm.zone);
+      const nextPtfmIndex = oldPlatforms.findIndex(oPtfm => {
+        return oPtfm.x ===  nX && oPtfm.y === nY && oPtfm.zone === nZ;
       });
-
-      if (connectedPlatformIndex === -1 ) {
+      if (nextPtfmIndex === -1 ) {
         mergedPlatforms = [...mergedPlatforms, newPtfm];
       } else {
-        mergedPlatforms[connectedPlatformIndex].refs = [...mergedPlatforms[connectedPlatformIndex].refs, newPtfm.refs[0]];
+        const nextPtfm = {...mergedPlatforms[nextPtfmIndex]};
+        nextPtfm.resources = [0, 1].includes(nextPtfm.zone)
+          ? [...nextPtfm.resources, ...newPtfm.resources]
+          : [...newPtfm.resources, ...nextPtfm.resources];
+
+        mergedPlatforms[nextPtfmIndex] = nextPtfm;
       }
     }
   });
 
   return mergedPlatforms;
+}
+
+const rotateZones = (zones, rotation) =>  {
+  const res = [...zones];
+  for (let i = 0; i < rotation; i++) {
+    res.unshift(res.pop());
+  }
+
+  return res;
+};
+
+const handleExploration = ({ x, y, rotation }) => {
+  if (TILES_POOL.length > 0) {
+    const newTile = { ...TILES_POOL.shift() };
+    newTile.zones = rotateZones(newTile.zones, rotation);
+    GRID.value[y][x] = newTile;
+    PLATFORMS.value = mergePlatforms(PLATFORMS.value, getTilePlatforms(newTile, x, y));
+  }
 }
 
 const initGame = () => {
@@ -92,9 +128,8 @@ const FLATTEN_GRID = computed(() => GRID.value.reduce((flattenGrid, row, rowinde
 
   return [...flattenGrid, ...flattenRow];
 }, []));
-initGame();
 
-console.log(PLATFORMS.value);
+initGame();
 </script>
 
 <style scoped>
